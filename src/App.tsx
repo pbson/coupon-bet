@@ -41,6 +41,7 @@ export default function App() {
   const handleStartGame = (games: Game[], gameStake: number) => {
     setCurrentStake(gameStake);
     setCurrentView("live-feed");
+    window.scrollTo({ top: 0 });
   };
 
   const handleThreeGamesSelected = () => {
