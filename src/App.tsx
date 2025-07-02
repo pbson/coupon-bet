@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Header } from "./components/Header";
-import { GameSetup } from "./components/GameSetup";
-import { BetBuilder } from "./components/BetBuilder";
-import { BetBoost } from "./components/BetBoost";
-import { LiveFeed } from "./components/LiveFeed";
+import { GameSetup } from "./components/bet-builder/GameSetup";
+import { BetBuilder } from "./components/bet-builder/BetBuilder";
+import { BetBoost } from "./components/bet-builder/BetBoost";
+import { LiveFeed } from "./components/live-games/LiveFeed";
 import type { Game, Player } from "./types";
+import { BetSummaryOverlay } from "./components/bet-builder/BetSummaryOverlay";
 
 export interface BetSelection {
   [key: string]: {
@@ -22,6 +23,7 @@ export default function App() {
   const [isGameSetupCollapsed, setIsGameSetupCollapsed] = useState(false);
   const [isBetBuilderCollapsed, setIsBetBuilderCollapsed] = useState(true);
   const [isBetBoostCollapsed, setIsBetBoostCollapsed] = useState(true);
+  const [isSlipOpen, setIsSlipOpen] = useState(false);
   
   const [selectedGames, setSelectedGames] = useState<Game[]>([]);
   const [betSelections, setBetSelections] = useState<BetSelection>({});
@@ -37,6 +39,37 @@ export default function App() {
   const [selectedGoalscorer, setSelectedGoalscorer] = useState<Player>();
   const [selectedCardedPlayer, setSelectedCardedPlayer] = useState<Player>();
   const [currentStake, setCurrentStake] = useState(10);
+
+  const fractionalToDecimal = (fractional: string): number => {
+    if (!fractional) return 1;
+    const parts = fractional.split('/');
+    if (parts.length !== 2) return 1;
+    const [numerator, denominator] = parts.map(Number);
+    if (isNaN(numerator) || isNaN(denominator) || denominator === 0) return 1;
+    return numerator / denominator + 1;
+  };
+
+  let totalOdds = 1;
+  Object.values(betSelections).forEach(selection => {
+    totalOdds *= fractionalToDecimal(selection.odd);
+  });
+
+  if (selectedGoals) {
+    const goalOdd = goalsOdds[selectedGoals - 1];
+    totalOdds *= fractionalToDecimal(goalOdd);
+  }
+
+  if (selectedCards) {
+    const cardOdd = cardsOdds[selectedCards - 1];
+    totalOdds *= fractionalToDecimal(cardOdd);
+  }
+
+  const GOALSCORER_BOOST = 1.2;
+  const CARDED_PLAYER_BOOST = 1.2;
+  if (selectedGoalscorer) totalOdds *= GOALSCORER_BOOST;
+  if (selectedCardedPlayer) totalOdds *= CARDED_PLAYER_BOOST;
+
+  const potentialReturn = currentStake * totalOdds;
 
   const handleStartGame = (games: Game[], gameStake: number) => {
     setCurrentStake(gameStake);
@@ -59,16 +92,18 @@ export default function App() {
       const newSelections = { ...prev };
       const isCurrentlySelected = newSelections[selectionKey];
 
-      // Deselect all in column first to handle toggling lower values
-      for (let i = 0; i < 3; i++) {
-        delete newSelections[`wins-${i}-${c}`];
-      }
-
-      if (!isCurrentlySelected) {
-        // Select this and all above it
-        for (let i = 0; i <= r; i++) {
-          newSelections[`wins-${i}-${c}`] = { odd: winOdds[i][c] };
+      if (isCurrentlySelected) {
+        // If currently selected, deselect it
+        delete newSelections[selectionKey];
+      } else {
+        // If not selected, select this one and remove any lower selections in the same column
+        // First, remove all selections in this column
+        for (let i = 0; i < 3; i++) {
+          delete newSelections[`wins-${i}-${c}`];
         }
+        
+        // Then select only this one
+        newSelections[selectionKey] = { odd: winOdds[r][c] };
       }
       
       return newSelections;
@@ -139,6 +174,9 @@ export default function App() {
           cardsOdds={cardsOdds}
           selectedGoalscorer={selectedGoalscorer}
           selectedCardedPlayer={selectedCardedPlayer}
+          isSlipOpen={isSlipOpen}
+          setIsSlipOpen={setIsSlipOpen}
+          potentialReturn={potentialReturn}
         />
         <BetBuilder
           isCollapsed={isBetBuilderCollapsed}
@@ -150,6 +188,8 @@ export default function App() {
           onGoalsChange={handleGoalsChange}
           selectedCards={selectedCards}
           onCardsChange={handleCardsChange}
+          goalsOdds={goalsOdds}
+          cardsOdds={cardsOdds}
         />
         <BetBoost
             isCollapsed={isBetBoostCollapsed}
@@ -160,6 +200,15 @@ export default function App() {
             selectedGoalscorer={selectedGoalscorer}
             selectedCardedPlayer={selectedCardedPlayer}
         />
+        {selectedGames.length > 0 && !isSlipOpen && (
+          <BetSummaryOverlay 
+            totalOdds={totalOdds}
+            stake={currentStake}
+            potentialReturn={potentialReturn}
+            onPlaceBet={() => setIsSlipOpen(true)}
+            isReady={selectedGames.length === 3}
+          />
+        )}
       </main>
     </div>
   );

@@ -3,6 +3,8 @@ export interface Player {
   name: string;
   scoreStats: string;
   cardStats: string;
+  goalscorerOdd: string;
+  cardedOdd: string;
 }
 
 export interface Team {

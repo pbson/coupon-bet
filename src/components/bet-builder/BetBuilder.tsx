@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { WinsTab } from './WinsTab';
-import { GoalsTab } from './GoalsTab';
 import { CardsTab } from './CardsTab';
+import { GoalsTab } from './GoalsTab';
+import { WinsTab } from './WinsTab';
 
 const ChevronUpIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
     <svg
@@ -29,7 +29,9 @@ export const BetBuilder = ({
     selectedGoals,
     onGoalsChange,
     selectedCards,
-    onCardsChange
+    onCardsChange,
+    goalsOdds,
+    cardsOdds
 }: { 
     isCollapsed: boolean, 
     onToggleCollapse: () => void,
@@ -40,6 +42,8 @@ export const BetBuilder = ({
     onGoalsChange: (goals: number) => void;
     selectedCards: number;
     onCardsChange: (cards: number) => void;
+    goalsOdds: string[];
+    cardsOdds: string[];
 }) => {
     const [activeTab, setActiveTab] = useState<Tab>('Wins');
 
@@ -61,8 +65,8 @@ export const BetBuilder = ({
                     </div>
                     <div className="p-4">
                         {activeTab === 'Wins' && <WinsTab selections={selections} onSelectionChange={onSelectionChange} odds={winOdds} />}
-                        {activeTab === 'Goals' && <GoalsTab selectedGoals={selectedGoals} onGoalsChange={onGoalsChange} />}
-                        {activeTab === 'Cards' && <CardsTab selectedCards={selectedCards} onCardsChange={onCardsChange} />}
+                        {activeTab === 'Goals' && <GoalsTab selectedGoals={selectedGoals} onGoalsChange={onGoalsChange} goalsOdds={goalsOdds} />}
+                        {activeTab === 'Cards' && <CardsTab selectedCards={selectedCards} onCardsChange={onCardsChange} cardsOdds={cardsOdds} />}
                     </div>
                 </div>
             </div>

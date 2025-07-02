@@ -6,9 +6,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Man Utd",
     logo: "https://1000logos.net/wp-content/uploads/2017/03/Manchester-United-Logo.png",
     players: [
-        { id: 'p1', name: "Fernandes", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p2', name: "Rashford", scoreStats: "Scored in 3 of last 5 games", cardStats: "0 yellows in last 5 games" },
-        { id: 'p3', name: "Garnacho", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games" },
+        { id: 'p1', name: "Fernandes", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "5/2", cardedOdd: "4/1" },
+        { id: 'p2', name: "Rashford", scoreStats: "Scored in 3 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "7/4", cardedOdd: "8/1" },
+        { id: 'p3', name: "Garnacho", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "3/1", cardedOdd: "3/1" },
     ],
   },
   {
@@ -16,9 +16,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Chelsea",
     logo: "https://ssl.gstatic.com/onebox/media/sports/logos/fhBITrIlbQxhVB6IjxUO6Q_96x96.png",
     players: [
-        { id: 'p4', name: "Palmer", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p5', name: "Sterling", scoreStats: "Scored in 1 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p6', name: "Jackson", scoreStats: "Scored in 2 of last 5 games", cardStats: "4 yellows in last 5 games" },
+        { id: 'p4', name: "Palmer", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "6/4", cardedOdd: "5/1" },
+        { id: 'p5', name: "Sterling", scoreStats: "Scored in 1 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "2/1", cardedOdd: "4/1" },
+        { id: 'p6', name: "Jackson", scoreStats: "Scored in 2 of last 5 games", cardStats: "4 yellows in last 5 games", goalscorerOdd: "7/4", cardedOdd: "2/1" },
     ],
   },
   {
@@ -26,9 +26,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Liverpool",
     logo: "https://ssl.gstatic.com/onebox/media/sports/logos/0iShHhASp5q1SL4JhtwJiw_96x96.png",
     players: [
-        { id: 'p7', name: "Salah", scoreStats: "Scored in 5 of last 5 games", cardStats: "0 yellows in last 5 games" },
-        { id: 'p8', name: "Núñez", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games" },
-        { id: 'p9', name: "Diaz", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
+        { id: 'p7', name: "Salah", scoreStats: "Scored in 5 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "1/1", cardedOdd: "10/1" },
+        { id: 'p8', name: "Núñez", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games", goalscorerOdd: "6/5", cardedOdd: "3/1" },
+        { id: 'p9', name: "Diaz", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "2/1", cardedOdd: "5/1" },
     ],
   },
   {
@@ -36,9 +36,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Arsenal",
     logo: "https://ssl.gstatic.com/onebox/media/sports/logos/4us2nCgl6kgZc0t3hpW75Q_96x96.png",
     players: [
-        { id: 'p10', name: "Saka", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p11', name: "Ødegaard", scoreStats: "Scored in 2 of last 5 games", cardStats: "2 yellows in last 5 games" },
-        { id: 'p12', name: "Martinelli", scoreStats: "Scored in 2 of last 5 games", cardStats: "0 yellows in last 5 games" },
+        { id: 'p10', name: "Saka", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "7/4", cardedOdd: "6/1" },
+        { id: 'p11', name: "Ødegaard", scoreStats: "Scored in 2 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "3/1", cardedOdd: "4/1" },
+        { id: 'p12', name: "Martinelli", scoreStats: "Scored in 2 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "2/1", cardedOdd: "9/1" },
     ],
   },
   {
@@ -46,9 +46,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Man City",
     logo: "https://1000logos.net/wp-content/uploads/2017/05/Manchester-City-Logo.png",
     players: [
-        { id: 'p13', name: "Haaland", scoreStats: "Scored in 5 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p14', name: "De Bruyne", scoreStats: "Scored in 2 of last 5 games", cardStats: "0 yellows in last 5 games" },
-        { id: 'p15', name: "Foden", scoreStats: "Scored in 3 of last 5 games", cardStats: "1 yellow in last 5 games" },
+        { id: 'p13', name: "Haaland", scoreStats: "Scored in 5 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "4/6", cardedOdd: "7/1" },
+        { id: 'p14', name: "De Bruyne", scoreStats: "Scored in 2 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "3/1", cardedOdd: "8/1" },
+        { id: 'p15', name: "Foden", scoreStats: "Scored in 3 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "2/1", cardedOdd: "6/1" },
     ],
   },
   {
@@ -56,9 +56,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Spurs",
     logo: "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-Logo.png",
     players: [
-        { id: 'p16', name: "Son", scoreStats: "Scored in 4 of last 5 games", cardStats: "0 yellows in last 5 games" },
-        { id: 'p17', name: "Maddison", scoreStats: "Scored in 1 of last 5 games", cardStats: "3 yellows in last 5 games" },
-        { id: 'p18', name: "Kulusevski", scoreStats: "Scored in 2 of last 5 games", cardStats: "2 yellows in last 5 games" },
+        { id: 'p16', name: "Son", scoreStats: "Scored in 4 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "2/1", cardedOdd: "10/1" },
+        { id: 'p17', name: "Maddison", scoreStats: "Scored in 1 of last 5 games", cardStats: "3 yellows in last 5 games", goalscorerOdd: "4/1", cardedOdd: "3/1" },
+        { id: 'p18', name: "Kulusevski", scoreStats: "Scored in 2 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "3/1", cardedOdd: "4/1" },
     ],
   },
   {
@@ -66,9 +66,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Real Madrid",
     logo: "https://1000logos.net/wp-content/uploads/2020/09/Real-Madrid-logo.png",
     players: [
-        { id: 'p19', name: "Bellingham", scoreStats: "Scored in 4 of last 5 games", cardStats: "4 yellows in last 5 games" },
-        { id: 'p20', name: "Vini Jr.", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games" },
-        { id: 'p21', name: "Rodrygo", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
+        { id: 'p19', name: "Bellingham", scoreStats: "Scored in 4 of last 5 games", cardStats: "4 yellows in last 5 games", goalscorerOdd: "2/1", cardedOdd: "2/1" },
+        { id: 'p20', name: "Vini Jr.", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games", goalscorerOdd: "7/4", cardedOdd: "3/1" },
+        { id: 'p21', name: "Rodrygo", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "2/1", cardedOdd: "6/1" },
     ],
   },
   {
@@ -76,9 +76,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Barcelona",
     logo: "https://1000logos.net/wp-content/uploads/2016/10/Barcelona-Logo.png",
     players: [
-        { id: 'p22', name: "Lewandowski", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p23', name: "Gündoğan", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games" },
-        { id: 'p24', name: "Pedri", scoreStats: "Scored in 0 of last 5 games", cardStats: "0 yellows in last 5 games" },
+        { id: 'p22', name: "Lewandowski", scoreStats: "Scored in 4 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "6/4", cardedOdd: "7/1" },
+        { id: 'p23', name: "Gündoğan", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "4/1", cardedOdd: "4/1" },
+        { id: 'p24', name: "Pedri", scoreStats: "Scored in 0 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "6/1", cardedOdd: "9/1" },
     ],
   },
   {
@@ -86,9 +86,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Bayern",
     logo: "https://1000logos.net/wp-content/uploads/2018/05/Bayern-Munchen-Logo.png",
     players: [
-        { id: 'p25', name: "Kane", scoreStats: "Scored in 5 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p26', name: "Musiala", scoreStats: "Scored in 3 of last 5 games", cardStats: "0 yellows in last 5 games" },
-        { id: 'p27', name: "Kimmich", scoreStats: "Scored in 0 of last 5 games", cardStats: "3 yellows in last 5 games" },
+        { id: 'p25', name: "Kane", scoreStats: "Scored in 5 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "4/7", cardedOdd: "8/1" },
+        { id: 'p26', name: "Musiala", scoreStats: "Scored in 3 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "2/1", cardedOdd: "10/1" },
+        { id: 'p27', name: "Kimmich", scoreStats: "Scored in 0 of last 5 games", cardStats: "3 yellows in last 5 games", goalscorerOdd: "7/1", cardedOdd: "3/1" },
     ],
   },
   {
@@ -96,9 +96,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Dortmund",
     logo: "https://1000logos.net/wp-content/uploads/2017/08/BVB-Logo.png",
     players: [
-        { id: 'p28', name: "Reus", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p29', name: "Brandt", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games" },
-        { id: 'p30', name: "Hummels", scoreStats: "Scored in 0 of last 5 games", cardStats: "4 yellows in last 5 games" },
+        { id: 'p28', name: "Reus", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "3/1", cardedOdd: "5/1" },
+        { id: 'p29', name: "Brandt", scoreStats: "Scored in 1 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "4/1", cardedOdd: "4/1" },
+        { id: 'p30', name: "Hummels", scoreStats: "Scored in 0 of last 5 games", cardStats: "4 yellows in last 5 games", goalscorerOdd: "10/1", cardedOdd: "2/1" },
     ],
   },
   {
@@ -106,9 +106,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "Juventus",
     logo: "https://1000logos.net/wp-content/uploads/2021/05/Juventus-logo.png",
     players: [
-        { id: 'p31', name: "Vlahović", scoreStats: "Scored in 4 of last 5 games", cardStats: "2 yellows in last 5 games" },
-        { id: 'p32', name: "Chiesa", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p33', name: "Rabiot", scoreStats: "Scored in 1 of last 5 games", cardStats: "5 yellows in last 5 games" },
+        { id: 'p31', name: "Vlahović", scoreStats: "Scored in 4 of last 5 games", cardStats: "2 yellows in last 5 games", goalscorerOdd: "6/4", cardedOdd: "4/1" },
+        { id: 'p32', name: "Chiesa", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "3/1", cardedOdd: "5/1" },
+        { id: 'p33', name: "Rabiot", scoreStats: "Scored in 1 of last 5 games", cardStats: "5 yellows in last 5 games", goalscorerOdd: "5/1", cardedOdd: "1/1" },
     ],
   },
   {
@@ -116,9 +116,9 @@ export const MOCK_TEAMS: Team[] = [
     name: "AC Milan",
     logo: "https://1000logos.net/wp-content/uploads/2016/10/AC-Milan-Logo.png",
     players: [
-        { id: 'p34', name: "Leão", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games" },
-        { id: 'p35', name: "Giroud", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games" },
-        { id: 'p36', name: "Pulisic", scoreStats: "Scored in 1 of last 5 games", cardStats: "0 yellows in last 5 games" },
+        { id: 'p34', name: "Leão", scoreStats: "Scored in 3 of last 5 games", cardStats: "3 yellows in last 5 games", goalscorerOdd: "2/1", cardedOdd: "3/1" },
+        { id: 'p35', name: "Giroud", scoreStats: "Scored in 2 of last 5 games", cardStats: "1 yellow in last 5 games", goalscorerOdd: "5/2", cardedOdd: "6/1" },
+        { id: 'p36', name: "Pulisic", scoreStats: "Scored in 1 of last 5 games", cardStats: "0 yellows in last 5 games", goalscorerOdd: "3/1", cardedOdd: "8/1" },
     ],
   },
 ];

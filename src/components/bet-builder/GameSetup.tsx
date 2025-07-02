@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import type { Game, Player } from "../types";
-import { MOCK_GAMES, MOCK_COMPETITIONS } from "../data";
+import type { Game, Player } from "../../types";
+import { MOCK_GAMES, MOCK_COMPETITIONS } from "../../data";
 import { BetSlip } from "./BetSlip";
-import type { BetSelection } from "../App";
+import type { BetSelection } from "../../App";
 
 const SearchIcon = () => (
   <svg
@@ -47,6 +47,9 @@ export const GameSetup = ({
   cardsOdds,
   selectedGoalscorer,
   selectedCardedPlayer,
+  isSlipOpen,
+  setIsSlipOpen,
+  potentialReturn,
 }: {
   onStartGame: (games: Game[], stake: number) => void;
   onThreeGamesSelected: () => void;
@@ -61,6 +64,9 @@ export const GameSetup = ({
   cardsOdds: string[];
   selectedGoalscorer?: Player;
   selectedCardedPlayer?: Player;
+  isSlipOpen: boolean;
+  setIsSlipOpen: (isOpen: boolean) => void;
+  potentialReturn: number;
 }) => {
   const [selectedGames, setSelectedGames] = useState<Game[]>([]);
   const [stake, setStake] = useState(10);
@@ -244,6 +250,9 @@ export const GameSetup = ({
         cardsOdds={cardsOdds}
         selectedGoalscorer={selectedGoalscorer}
         selectedCardedPlayer={selectedCardedPlayer}
+        isSlipOpen={isSlipOpen}
+        setIsSlipOpen={setIsSlipOpen}
+        potentialReturn={potentialReturn}
       />
     </>
   );

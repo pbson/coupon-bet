@@ -3,11 +3,12 @@ import React, { useRef, useEffect } from 'react';
 interface GoalsTabProps {
     selectedGoals: number;
     onGoalsChange: (goals: number) => void;
+    goalsOdds: string[];
 }
 
 const GOALS_RANGE = Array.from({ length: 25 }, (_, i) => i + 1);
 
-export const GoalsTab = ({ selectedGoals, onGoalsChange }: GoalsTabProps) => {
+export const GoalsTab = ({ selectedGoals, onGoalsChange, goalsOdds }: GoalsTabProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
 
     // Effect to scroll the selected item into view, especially on initial load
@@ -30,19 +31,22 @@ export const GoalsTab = ({ selectedGoals, onGoalsChange }: GoalsTabProps) => {
                 How many goals across all games
             </h3>
             <div ref={sliderRef} className="flex overflow-x-auto space-x-2 sm:space-x-4 p-4 items-center snap-x snap-mandatory goals-slider cursor-grab">
-                {GOALS_RANGE.map(goal => (
+                {GOALS_RANGE.map((goal, index) => (
                     <div
                         key={goal}
                         data-goal={goal}
                         onClick={() => onGoalsChange(goal)}
-                        className={`snap-center shrink-0 flex items-center justify-center rounded-lg transition-all duration-300
+                        className={`snap-center shrink-0 flex flex-col items-center justify-center rounded-lg transition-all duration-300
                             ${selectedGoals === goal
-                                ? 'w-24 h-24 bg-yellow-500 text-black text-4xl font-bold shadow-lg scale-110'
-                                : 'w-16 h-16 bg-blue-800 text-white text-xl opacity-70 hover:opacity-100'
+                                ? 'w-24 h-24 bg-yellow-500 text-black shadow-lg scale-110'
+                                : 'w-16 h-16 bg-blue-800 text-white opacity-70 hover:opacity-100'
                             }
                         `}
                     >
-                        {goal}
+                        <span className={`font-bold ${selectedGoals === goal ? 'text-4xl' : 'text-xl'}`}>{goal}+</span>
+                        {selectedGoals === goal && (
+                            <span className="text-sm font-semibold">{goalsOdds[index]}</span>
+                        )}
                     </div>
                 ))}
             </div>

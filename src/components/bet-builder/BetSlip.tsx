@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import type { Game, Player } from '../types';
-import type { BetSelection } from '../App';
+import React from 'react';
+import type { Game, Player } from '../../types';
+import type { BetSelection } from '../../App';
 
 const TrashIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
     <svg
@@ -43,6 +43,9 @@ interface BetSlipProps {
     cardsOdds: string[];
     selectedGoalscorer?: Player;
     selectedCardedPlayer?: Player;
+    isSlipOpen: boolean;
+    setIsSlipOpen: (isOpen: boolean) => void;
+    potentialReturn: number;
 }
 
 export const BetSlip = ({
@@ -59,44 +62,15 @@ export const BetSlip = ({
     cardsOdds,
     selectedGoalscorer,
     selectedCardedPlayer,
+    isSlipOpen,
+    setIsSlipOpen,
+    potentialReturn
 }: BetSlipProps) => {
-    const [isSlipOpen, setIsSlipOpen] = useState(false);
-    
     const quickStakeAmounts = [5, 10, 25, 50];
     const isReady = selectedGames.length === 3;
-
-    const fractionalToDecimal = (fractional: string): number => {
-        if (!fractional) return 1;
-        const parts = fractional.split('/');
-        if (parts.length !== 2) return 1;
-        const [numerator, denominator] = parts.map(Number);
-        if (isNaN(numerator) || isNaN(denominator) || denominator === 0) return 1;
-        return numerator / denominator + 1;
-    };
-    
-    let totalOdds = 1;
-    const winSelections = Object.values(betSelections);
-    winSelections.forEach(selection => {
-        totalOdds *= fractionalToDecimal(selection.odd);
-    });
-
-    if (selectedGoals) {
-        const goalOdd = goalsOdds[selectedGoals - 1];
-        totalOdds *= fractionalToDecimal(goalOdd);
-    }
-
-    if (selectedCards) {
-        const cardOdd = cardsOdds[selectedCards - 1];
-        totalOdds *= fractionalToDecimal(cardOdd);
-    }
-    
     const GOALSCORER_BOOST = 1.2;
     const CARDED_PLAYER_BOOST = 1.2;
-    if (selectedGoalscorer) totalOdds *= GOALSCORER_BOOST;
-    if (selectedCardedPlayer) totalOdds *= CARDED_PLAYER_BOOST;
-
-    const potentialReturn = stake * totalOdds;
-
+    
     const renderSummaryItem = (label: string, value: string | undefined, odd?: string) => {
         if (!value) return null;
         return (
@@ -211,7 +185,7 @@ export const BetSlip = ({
                                   {levels[parseInt(row)]} {outcomes[parseInt(col)]}
                                 </span>
                                 <span className="font-semibold text-white">
-                                  {(selection as any).odd}
+                                  {selection.odd}
                                 </span>
                               </div>
                             );

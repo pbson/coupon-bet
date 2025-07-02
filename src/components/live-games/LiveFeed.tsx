@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import type { Game, LiveEvent, Score, EventType, CelebrationState, Player } from "../types";
+import type { Game, LiveEvent, Score, EventType, CelebrationState, Player } from "../../types";
+import type { BetSelection } from "../../App";
+import { LiveScoreBoard } from "./LiveScoreBoard";
+import { BetSlipSummary } from "./BetSlipSummary";
 
 const PlayIcon = () => (
   <svg
@@ -94,74 +97,22 @@ const CelebrationOverlay = ({
   );
 };
 
-const ScoreBoard = ({ 
-  games, 
-  scores, 
-  gameTimes 
-}: { 
-  games: Game[]; 
-  scores: { [key: string]: Score }; 
-  gameTimes: { [key: string]: number };
-}) => (
-  <div className="space-y-4 mb-6">
-    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Live Games</h2>
-    {games.map((game) => {
-      const score = scores[game.id] || { home: 0, away: 0 };
-      const minute = gameTimes[game.id] || 0;
-      const isLive = minute > 0 && minute < 90;
-      
-      return (
-        <div key={game.id} className="bet-card rounded-xl p-4 border-2 flex flex-col">
-          <div className="flex justify-between items-center text-xs text-slate-300 uppercase font-semibold mb-3">
-            <span>{game.competition}</span>
-            {isLive && (
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                </span>
-                <span className="text-red-400 font-bold">{minute}'</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center justify-center">
-            <div className="flex flex-col items-center gap-2 w-1/3 text-center">
-              <img src={game.home.logo} alt={game.home.name} className="w-10 h-10" />
-              <span className="text-white font-semibold text-sm">{game.home.name}</span>
-            </div>
-            
-            <div className="mx-4 text-center">
-              <span className="text-4xl font-bold text-white tracking-tighter">{score.home} - {score.away}</span>
-            </div>
-            
-            <div className="flex flex-col items-center gap-2 w-1/3 text-center">
-              <img src={game.away.logo} alt={game.away.name} className="w-10 h-10" />
-              <span className="text-white font-semibold text-sm">{game.away.name}</span>
-            </div>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-);
-
 const LiveEventTicker = ({ events }: { events: LiveEvent[] }) => (
-  <div className="bet-card rounded-xl shadow-2xl border-2 p-4 mb-6">
-    <div className="flex justify-between items-center mb-3">
-      <h2 className="text-lg font-bold text-white">Live Event Ticker</h2>
-      <div className="flex items-center gap-2 text-sm font-semibold text-red-400">
-        <span className="relative flex h-2 w-2">
+  <div className="bet-card rounded-xl shadow-2xl border-2 p-2 sm:p-4 mb-4 sm:mb-6">
+    <div className="flex justify-between items-center mb-2 sm:mb-3">
+      <h2 className="text-base sm:text-lg font-bold text-white">Live Event Ticker</h2>
+      <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-semibold text-red-400">
+        <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-red-500"></span>
         </span>
         <span>LIVE</span>
       </div>
     </div>
-    <div className="space-y-3 h-48 overflow-y-auto pr-2 scrollbar-thin">
+    <div className="space-y-2 sm:space-y-3 h-32 sm:h-48 overflow-y-auto pr-1 sm:pr-2 scrollbar-thin">
       {events.length === 0 ? (
         <div className="flex items-center justify-center h-full">
-          <p className="text-slate-400">Waiting for match events...</p>
+          <p className="text-slate-400 text-xs sm:text-sm">Waiting for match events...</p>
         </div>
       ) : (
         events
@@ -172,9 +123,15 @@ const LiveEventTicker = ({ events }: { events: LiveEvent[] }) => (
               key={event.id}
               className="flex items-center animate-fade-in-up"
             >
-              <EventTickerIcon type={event.type} />
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center mr-2 sm:mr-3 ${
+                event.type === 'GOAL' ? 'bg-green-100 text-green-600' :
+                event.type === 'CHANCE' ? 'bg-blue-100 text-blue-600' :
+                'bg-yellow-100 text-yellow-600'
+              } text-sm sm:text-lg shrink-0`}>
+                {event.type === 'GOAL' ? '⚽' : event.type === 'CHANCE' ? '🎯' : '🧤'}
+              </div>
               <div className="flex-1">
-                <p className="font-semibold text-sm text-white">
+                <p className="font-semibold text-xs sm:text-sm text-white">
                   {event.text}
                 </p>
                 <p className="text-xs text-slate-300">{event.game}</p>
@@ -189,24 +146,9 @@ const LiveEventTicker = ({ events }: { events: LiveEvent[] }) => (
   </div>
 );
 
-const CheckIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-    className="w-5 h-5 text-green-500"
-  >
-    <path
-      fillRule="evenodd"
-      d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
 interface LiveFeedProps {
   selectedGames: Game[];
-  betSelections: any;
+  betSelections: BetSelection;
   selectedGoals: number;
   selectedCards: number;
   selectedGoalscorer?: Player;
@@ -244,6 +186,8 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
     wins: {}
   });
   const [gamesEnded, setGamesEnded] = useState(false);
+  const [goalEvents, setGoalEvents] = useState<Array<{ player: string; minute: number; team: string }>>([]);
+  const [cardEvents, setCardEvents] = useState<Array<{ player: string; minute: number; team: string }>>([]);
 
   const goalAudioRef = useRef<HTMLAudioElement | null>(null);
   const winnerAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -283,8 +227,8 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
       });
     }
 
-    // Check total cards (simulated - randomly trigger on certain events)
-    if (eventType === "SAVE" && Math.random() > 0.7 && !fulfilledBets.cards) {
+    // Check total cards based on actual card events
+    if (cardEvents.length >= selectedCards && !fulfilledBets.cards) {
       setFulfilledBets(prev => ({ ...prev, cards: true }));
       const winAmount = stake * 1.8;
       setWinnings(prev => prev + winAmount);
@@ -299,7 +243,7 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
         amount: winAmount,
       });
     }
-  }, [selectedGoals, selectedCards, stake, fulfilledBets]);
+  }, [selectedGoals, selectedCards, stake, fulfilledBets, cardEvents]);
 
   const runSimulation = useCallback(() => {
     if (celebration) return;
@@ -348,6 +292,12 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
         setCelebration({ type: "GOAL", text: eventData.text });
       }
       
+      setGoalEvents((prev) => [...prev, { 
+        player: player.name, 
+        minute: newMinute, 
+        team: teamToAct.name 
+      }]);
+      
       setLiveScores((prev) => {
         const newScores = { ...prev };
         newScores[game.id] = { ...newScores[game.id] };
@@ -373,16 +323,24 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
       };
       
       // Check for cards when there's a save (simulating fouls)
-      if (selectedCardedPlayer && Math.random() > 0.8 && !fulfilledBets.cardedPlayer) {
-        setFulfilledBets(prev => ({ ...prev, cardedPlayer: true }));
-        const winAmount = stake * 2.2;
-        setWinnings(prev => prev + winAmount);
+      if (Math.random() > 0.85) {
+        setCardEvents((prev) => [...prev, { 
+          player: player.name, 
+          minute: newMinute, 
+          team: teamToAct.name 
+        }]);
         
-        setCelebration({
-          type: "BET_WIN",
-          text: `${selectedCardedPlayer.name} to be Carded Boost Won!`,
-          amount: winAmount,
-        });
+        if (selectedCardedPlayer && player.id === selectedCardedPlayer.id && !fulfilledBets.cardedPlayer) {
+          setFulfilledBets(prev => ({ ...prev, cardedPlayer: true }));
+          const winAmount = stake * 2.2;
+          setWinnings(prev => prev + winAmount);
+          
+          setCelebration({
+            type: "BET_WIN",
+            text: `${selectedCardedPlayer.name} to be Carded Boost Won!`,
+            amount: winAmount,
+          });
+        }
       }
       
       setLiveScores((prev) => {
@@ -486,123 +444,30 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
       )}
 
       <div className="p-4 max-w-4xl mx-auto">
-        <div className="text-center mb-6 bg-gradient-to-br from-blue-900 to-blue-950 p-6 rounded-2xl border-2 border-blue-800 shadow-lg">
-          <h2 className="text-sm font-bold text-blue-200 uppercase tracking-widest">Total Winnings</h2>
-          <p className="text-5xl font-black text-yellow-400 my-1 tracking-tighter">
+        <div className="text-center mb-6 bg-gradient-to-br from-blue-900 to-blue-950 p-4 sm:p-6 rounded-2xl border-2 border-blue-800 shadow-lg">
+          <h2 className="text-xs sm:text-sm font-bold text-blue-200 uppercase tracking-widest">Total Winnings</h2>
+          <p className="text-3xl sm:text-5xl font-black text-yellow-400 my-1 tracking-tighter">
             ${winnings.toFixed(2)}
           </p>
         </div>
 
-        <ScoreBoard games={selectedGames} scores={liveScores} gameTimes={gameTimes} />
+        <LiveScoreBoard games={selectedGames} scores={liveScores} gameTimes={gameTimes} />
+        
+        <BetSlipSummary
+          selectedGames={selectedGames}
+          betSelections={betSelections}
+          selectedGoals={selectedGoals}
+          selectedCards={selectedCards}
+          selectedGoalscorer={selectedGoalscorer}
+          selectedCardedPlayer={selectedCardedPlayer}
+          stake={stake}
+          liveScores={liveScores}
+          fulfilledBets={fulfilledBets}
+          goalEvents={goalEvents}
+          cardEvents={cardEvents}
+        />
+        
         <LiveEventTicker events={events} />
-
-        <div className="bet-card rounded-xl p-4 border-2 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-white">Your Bet Slip</h3>
-            <div className="text-yellow-400 font-bold text-sm">Total Stake: ${stake.toFixed(2)}</div>
-          </div>
-          <div className="space-y-3">
-            
-            {/* Win Selections */}
-            {Object.keys(betSelections).length > 0 && (
-              <div className="bg-slate-900/50 rounded-lg p-3">
-                <h4 className="text-md font-semibold text-white mb-2">Win Outcomes</h4>
-                <div className="space-y-2">
-                  {Object.entries(betSelections).map(([key, selection]) => {
-                    const [, row, col] = key.split('-');
-                    const outcomes = ['Home Wins', 'Draws', 'Away Wins'];
-                    const levels = ['1+', '2+', '3+'];
-                    const isFulfilled = fulfilledBets.wins[key] || false;
-                    
-                    // Count current actual outcomes
-                    let homeWins = 0;
-                    let draws = 0;
-                    let awayWins = 0;
-                    
-                    selectedGames.forEach(game => {
-                      const score = liveScores[game.id] || { home: 0, away: 0 };
-                      if (score.home > score.away) homeWins++;
-                      else if (score.home === score.away) draws++;
-                      else awayWins++;
-                    });
-                    
-                    const currentCounts = [homeWins, draws, awayWins];
-                    const outcomeType = parseInt(col);
-                    const currentCount = currentCounts[outcomeType];
-                    
-                    return (
-                      <div key={key} className="flex justify-between items-center text-white p-2 rounded-md bg-slate-800/50">
-                        <div>
-                          <span className="text-sm font-semibold">
-                            {levels[parseInt(row)]} {outcomes[parseInt(col)]}
-                          </span>
-                          <div className="text-xs text-slate-300">
-                            Current: {currentCount} | Odds: {selection.odd}
-                          </div>
-                        </div>
-                        {isFulfilled ? <CheckIcon /> : <span className="w-5 h-5"></span>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Goals & Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="bg-slate-900/50 rounded-lg p-3">
-                <h4 className="text-md font-semibold text-white mb-2">Goals</h4>
-                <div className="flex justify-between items-center text-white p-2 rounded-md bg-slate-800/50">
-                  <div>
-                    <span className="font-semibold text-sm">{selectedGoals}+ Total Goals</span>
-                    <div className="text-xs text-slate-300">
-                      Current: {Object.values(liveScores).reduce((sum, score) => sum + score.home + score.away, 0)}
-                    </div>
-                  </div>
-                  {fulfilledBets.goals ? <CheckIcon /> : <span className="w-5 h-5"></span>}
-                </div>
-              </div>
-              <div className="bg-slate-900/50 rounded-lg p-3">
-                <h4 className="text-md font-semibold text-white mb-2">Cards</h4>
-                <div className="flex justify-between items-center text-white p-2 rounded-md bg-slate-800/50">
-                  <div>
-                    <span className="font-semibold text-sm">{selectedCards}+ Yellow Cards</span>
-                    <div className="text-xs text-slate-300">Tracking incidents</div>
-                  </div>
-                  {fulfilledBets.cards ? <CheckIcon /> : <span className="w-5 h-5"></span>}
-                </div>
-              </div>
-            </div>
-
-            {/* Player Boosts */}
-            {(selectedGoalscorer || selectedCardedPlayer) && (
-              <div className="bg-slate-900/50 rounded-lg p-3">
-                <h4 className="text-md font-semibold text-white mb-2">Player Boosts</h4>
-                <div className="space-y-2">
-                {selectedGoalscorer && (
-                  <div className="flex justify-between items-center text-white p-2 rounded-md bg-slate-800/50">
-                    <div>
-                      <span className="font-semibold text-sm">{selectedGoalscorer.name} to Score</span>
-                      <div className="text-xs text-slate-300">{selectedGoalscorer.scoreStats}</div>
-                    </div>
-                    {fulfilledBets.goalscorer ? <CheckIcon /> : <span className="w-5 h-5"></span>}
-                  </div>
-                )}
-
-                {selectedCardedPlayer && (
-                  <div className="flex justify-between items-center text-white p-2 rounded-md bg-slate-800/50">
-                    <div>
-                      <span className="font-semibold text-sm">{selectedCardedPlayer.name} to be Carded</span>
-                      <div className="text-xs text-slate-300">{selectedCardedPlayer.cardStats}</div>
-                    </div>
-                    {fulfilledBets.cardedPlayer ? <CheckIcon /> : <span className="w-5 h-5"></span>}
-                  </div>
-                )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
 
         <div className="fixed bottom-4 right-4 z-30 flex items-center justify-center gap-2 rounded-full bg-white/80 p-2 border border-gray-200 backdrop-blur-sm shadow-lg">
           <button

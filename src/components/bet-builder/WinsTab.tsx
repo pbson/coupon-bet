@@ -13,37 +13,46 @@ export const WinsTab = ({ selections, onSelectionChange, odds }: WinsTabProps) =
     // Memoize the calculation of disabled states to avoid re-calculating on every render
     const disabledMap = useMemo(() => {
         const newDisabledMap: { [key: string]: boolean } = {};
+        
+        // Get currently selected requirements for each column
+        const selectedCounts = { home: 0, draw: 0, away: 0 };
         const maxSelectedRows: { [key: number]: number } = { 0: -1, 1: -1, 2: -1 };
-
-        // Find max selected row for each column
+        
         Object.keys(selections).forEach(key => {
             if (key.startsWith('wins-')) {
                 const [, rStr, cStr] = key.split('-');
                 const r = parseInt(rStr, 10);
                 const c = parseInt(cStr, 10);
+                const required = r + 1; // row 0 = 1+, row 1 = 2+, row 2 = 3+
+                
+                // Track max selected row for each column
                 maxSelectedRows[c] = Math.max(maxSelectedRows[c], r);
+                
+                if (c === 0) selectedCounts.home = Math.max(selectedCounts.home, required);
+                else if (c === 1) selectedCounts.draw = Math.max(selectedCounts.draw, required);
+                else selectedCounts.away = Math.max(selectedCounts.away, required);
             }
         });
 
-        const minCounts = {
-            home: maxSelectedRows[0] > -1 ? maxSelectedRows[0] + 1 : 0,
-            draw: maxSelectedRows[1] > -1 ? maxSelectedRows[1] + 1 : 0,
-            away: maxSelectedRows[2] > -1 ? maxSelectedRows[2] + 1 : 0,
-        };
-
-        // Now, check every cell to see if it's a possibility
+        // Check each cell to see if it should be disabled
         for (let r = 0; r < 3; r++) {
             for (let c = 0; c < 3; c++) {
                 const selectionKey = `wins-${r}-${c}`;
+                const required = r + 1; // Convert row index to required count
                 
                 // Condition 1: Total games would exceed 3
-                const required = r + 1;
-                let others = 0;
-                if (c === 0) others = minCounts.draw + minCounts.away;
-                else if (c === 1) others = minCounts.home + minCounts.away;
-                else others = minCounts.home + minCounts.draw;
+                let totalRequired = selectedCounts.home + selectedCounts.draw + selectedCounts.away;
                 
-                if (required + others > 3) {
+                // Adjust for this potential selection
+                if (c === 0) {
+                    totalRequired = totalRequired - selectedCounts.home + Math.max(selectedCounts.home, required);
+                } else if (c === 1) {
+                    totalRequired = totalRequired - selectedCounts.draw + Math.max(selectedCounts.draw, required);
+                } else {
+                    totalRequired = totalRequired - selectedCounts.away + Math.max(selectedCounts.away, required);
+                }
+                
+                if (totalRequired > 3) {
                     newDisabledMap[selectionKey] = true;
                 }
 
