@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-const ROW_LABELS = ["1+", "2+", "3+"];
+const ROW_LABELS = ['1 or more', '2 or more', '3 or more'];
 const COL_LABELS = ["Home", "Draw", "Away"];
 
 interface WinsTabProps {

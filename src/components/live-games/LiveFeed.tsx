@@ -89,7 +89,7 @@ const CelebrationOverlay = ({
         </p>
         {amount && (
           <p className="font-bold text-yellow-400 mt-2 text-4xl">
-            +${amount.toFixed(2)}
+            +€{amount.toFixed(2)}
           </p>
         )}
       </div>
@@ -447,7 +447,7 @@ export const LiveFeed: React.FC<LiveFeedProps> = ({
         <div className="text-center mb-6 bg-gradient-to-br from-blue-900 to-blue-950 p-4 sm:p-6 rounded-2xl border-2 border-blue-800 shadow-lg">
           <h2 className="text-xs sm:text-sm font-bold text-blue-200 uppercase tracking-widest">Total Winnings</h2>
           <p className="text-3xl sm:text-5xl font-black text-yellow-400 my-1 tracking-tighter">
-            ${winnings.toFixed(2)}
+            €{winnings.toFixed(2)}
           </p>
         </div>
 

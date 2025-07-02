@@ -166,88 +166,90 @@ export const BetSlip = ({
 
                 <div className="border-t border-blue-800 my-4"></div>
 
-                <div>
-                    <h3 className="text-lg font-bold text-white mb-2">Bet Summary</h3>
-                    
-                    {/* Win Selections Detail */}
-                    {Object.keys(betSelections).length > 0 && (
-                      <div className="mb-3">
-                        <h4 className="text-sm font-semibold text-gray-300 mb-2">Win Outcomes</h4>
-                        <div className="space-y-1">
-                          {Object.entries(betSelections).map(([key, selection]) => {
-                            const [, row, col] = key.split('-');
-                            const outcomes = ['Home Wins', 'Draws', 'Away Wins'];
-                            const levels = ['1+', '2+', '3+'];
-                            
-                            return (
-                              <div key={key} className="flex justify-between items-center text-sm py-1">
-                                <span className="text-gray-300">
-                                  {levels[parseInt(row)]} {outcomes[parseInt(col)]}
-                                </span>
-                                <span className="font-semibold text-white">
-                                  {selection.odd}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
+                <div className="space-y-3 text-white">
+                  <h3 className="text-lg font-bold">Your Bet Summary</h3>
+                  
+                  {Object.keys(betSelections).length > 0 && (
+                    <div>
+                      <h4 className="text-md font-semibold mb-2">Win Outcomes</h4>
+                      <div className="space-y-1">
+                        {Object.entries(betSelections).map(([key, selection]) => {
+                          const [, row, col] = key.split('-');
+                          const outcomes = ['Home Wins', 'Draws', 'Away Wins'];
+                          const levels = ['1+', '2+', '3+'];
+                          return (
+                            <div key={key} className="flex justify-between">
+                              <span className="text-sm">{levels[parseInt(row)]} {outcomes[parseInt(col)]}</span>
+                              <span className="font-semibold text-white">{(selection as { odd: string }).odd}</span>
+                            </div>
+                          );
+                        })}
                       </div>
-                    )}
-                    
-                    {renderSummaryItem("Total Goals", `${selectedGoals}+ goals`, goalsOdds[selectedGoals - 1])}
-                    {renderSummaryItem("Total Cards", `${selectedCards}+ cards`, cardsOdds[selectedCards - 1])}
-                    {renderSummaryItem("Goalscorer Boost", selectedGoalscorer?.name, `x${GOALSCORER_BOOST}`)}
-                    {renderSummaryItem("Carded Player Boost", selectedCardedPlayer?.name, `x${CARDED_PLAYER_BOOST}`)}
-                </div>
-
-                <div className="border-t border-blue-800 my-4"></div>
-
-                <div>
-                  <h2 className="text-lg font-bold text-white mb-3">
-                    Set Your Stake
-                  </h2>
-                  <div className="flex flex-col sm:flex-row gap-4 items-center">
-                    <div className="relative flex-grow w-full">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white text-lg">
-                        $
-                      </span>
-                      <input
-                        type="number"
-                        value={stake}
-                        onChange={onStakeInputChange}
-                        className="w-full border-2 rounded-lg p-3 pl-7 text-lg font-bold text-white focus:ring-2 bet-empty-slot border-blue-800"
-                      />
                     </div>
-                    <div className="flex gap-2">
-                      {quickStakeAmounts.map((amount) => (
+                  )}
+
+                  {renderSummaryItem("Total Goals", `${selectedGoals}+ goals`, goalsOdds[selectedGoals - 1])}
+                  {renderSummaryItem("Total Cards", `${selectedCards}+ cards`, cardsOdds[selectedCards - 1])}
+                  {renderSummaryItem("Goalscorer Boost", selectedGoalscorer?.name, `x${GOALSCORER_BOOST}`)}
+                  {renderSummaryItem("Carded Player Boost", selectedCardedPlayer?.name, `x${CARDED_PLAYER_BOOST}`)}
+
+                  <div className="border-t border-slate-700 pt-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">Stake</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => onQuickStakeChange(stake - 1)}
+                          disabled={stake <= 1}
+                          className="text-white bg-blue-700 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed w-6 h-6 rounded-full flex items-center justify-center"
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          value={stake}
+                          onChange={onStakeInputChange}
+                          className="w-16 p-1 rounded bg-slate-800 text-white text-center"
+                          min="1"
+                        />
+                        <button
+                          onClick={() => onQuickStakeChange(stake + 1)}
+                          className="text-white bg-blue-700 hover:bg-blue-600 w-6 h-6 rounded-full flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {[5, 10, 25, 50].map((amount) => (
                         <button
                           key={amount}
                           onClick={() => onQuickStakeChange(amount)}
-                          className="font-bold py-3 px-4 rounded-lg transition-colors cursor-pointer bet-stake-button"
+                          className="px-3 py-1 bg-blue-700 hover:bg-blue-600 rounded text-sm font-semibold text-white"
                         >
-                          ${amount}
+                          €{amount}
                         </button>
                       ))}
                     </div>
-                  </div>
-                </div>
-                <div className="mt-6 text-center">
-                    <div className="text-lg text-white mb-2">
-                        Potential Return: <span className="font-bold text-green-400">${potentialReturn.toFixed(2)}</span>
+
+                    <div className="text-center mt-4">
+                      Potential Return: <span className="font-bold text-green-400">€{potentialReturn.toFixed(2)}</span>
                     </div>
-                  <button
-                    onClick={onStartGame}
-                    disabled={!isReady}
-                    className={`w-full text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-all duration-300 ${
-                      isReady
-                        ? "bg-green-600 hover:bg-green-500 animate-pulse-green cursor-pointer"
-                        : "cursor-not-allowed bet-disabled-button"
-                    }`}
-                  >
-                    {isReady
-                      ? `Place Bet: $${stake.toFixed(2)}`
-                      : "Select 3 Games"}
-                  </button>
+
+                    <button
+                      onClick={onStartGame}
+                      disabled={selectedGames.length !== 3}
+                      className={`w-full text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-all duration-300 ${
+                        selectedGames.length === 3
+                          ? "bg-green-600 hover:bg-green-500"
+                          : "bg-slate-600 cursor-not-allowed"
+                      }`}
+                    >
+                      {selectedGames.length === 3
+                        ? `Place Bet: €${stake.toFixed(2)}`
+                        : `Select ${3 - selectedGames.length} more game${3 - selectedGames.length > 1 ? 's' : ''}`}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

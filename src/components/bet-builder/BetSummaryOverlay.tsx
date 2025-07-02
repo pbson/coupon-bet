@@ -23,13 +23,17 @@ export const BetSummaryOverlay = ({
                         <span>Total Odds:</span>
                         <span className="font-bold">{totalOdds.toFixed(2)}/1</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span>Stake:</span>
-                        <span className="font-bold">${stake.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between font-semibold">
-                        <span>Return:</span>
-                        <span className="font-bold text-green-400">${potentialReturn.toFixed(2)}</span>
+                    <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                        <div>
+                            <span className="text-slate-300">Stake:</span>
+                            <br />
+                            <span className="font-bold">€{stake.toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span className="text-slate-300">Return:</span>
+                            <br />
+                            <span className="font-bold text-green-400">€{potentialReturn.toFixed(2)}</span>
+                        </div>
                     </div>
                 </div>
                 <button

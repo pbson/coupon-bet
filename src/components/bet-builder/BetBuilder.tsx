@@ -18,8 +18,6 @@ const ChevronUpIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
     </svg>
   );
 
-type Tab = 'Wins' | 'Goals' | 'Cards';
-
 export const BetBuilder = ({ 
     isCollapsed, 
     onToggleCollapse,
@@ -45,7 +43,9 @@ export const BetBuilder = ({
     goalsOdds: string[];
     cardsOdds: string[];
 }) => {
-    const [activeTab, setActiveTab] = useState<Tab>('Wins');
+    const [isWinsCollapsed, setIsWinsCollapsed] = useState(false);
+    const [isGoalsCollapsed, setIsGoalsCollapsed] = useState(true);
+    const [isCardsCollapsed, setIsCardsCollapsed] = useState(true);
 
     return (
         <div className="rounded-xl shadow-2xl border-2 p-4 mt-4 bet-card">
@@ -57,19 +57,76 @@ export const BetBuilder = ({
             </div>
 
             <div className={`collapsible-content ${isCollapsed ? 'collapsed' : 'expanded'}`}>
-                <div className="mt-4">
-                    <div className="flex border-b border-slate-700">
-                        <button onClick={() => setActiveTab('Wins')} className={`py-2 px-4 font-semibold ${activeTab === 'Wins' ? 'text-white border-b-2 border-white' : 'text-slate-400'}`}>Wins</button>
-                        <button onClick={() => setActiveTab('Goals')} className={`py-2 px-4 font-semibold ${activeTab === 'Goals' ? 'text-white border-b-2 border-white' : 'text-slate-400'}`}>Goals</button>
-                        <button onClick={() => setActiveTab('Cards')} className={`py-2 px-4 font-semibold ${activeTab === 'Cards' ? 'text-white border-b-2 border-white' : 'text-slate-400'}`}>Cards</button>
+                <div className="mt-4 space-y-4">
+                    
+                    {/* Step 1: Select Wins */}
+                    <div className="rounded-lg border border-slate-600 overflow-hidden">
+                        <div 
+                            className="flex justify-between items-center p-4 bg-slate-800/50 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                            onClick={() => setIsWinsCollapsed(!isWinsCollapsed)}
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="w-6 h-6 bg-blue-600 text-white text-sm font-bold rounded-full flex items-center justify-center">1</span>
+                                <h3 className="text-lg font-semibold text-white">Select Wins</h3>
+                                <span className="text-sm text-slate-300">
+                                    ({Object.keys(selections).length} selected)
+                                </span>
+                            </div>
+                            <ChevronUpIcon className={`w-5 h-5 text-white transform transition-transform ${isWinsCollapsed ? 'rotate-180' : ''}`} />
+                        </div>
+                        <div className={`collapsible-content ${isWinsCollapsed ? 'collapsed' : 'expanded'}`}>
+                            <div className="p-4 bg-slate-900/30">
+                                <WinsTab selections={selections} onSelectionChange={onSelectionChange} odds={winOdds} />
+                            </div>
+                        </div>
                     </div>
-                    <div className="p-4">
-                        {activeTab === 'Wins' && <WinsTab selections={selections} onSelectionChange={onSelectionChange} odds={winOdds} />}
-                        {activeTab === 'Goals' && <GoalsTab selectedGoals={selectedGoals} onGoalsChange={onGoalsChange} goalsOdds={goalsOdds} />}
-                        {activeTab === 'Cards' && <CardsTab selectedCards={selectedCards} onCardsChange={onCardsChange} cardsOdds={cardsOdds} />}
+
+                    {/* Step 2: Select Goals */}
+                    <div className="rounded-lg border border-slate-600 overflow-hidden">
+                        <div 
+                            className="flex justify-between items-center p-4 bg-slate-800/50 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                            onClick={() => setIsGoalsCollapsed(!isGoalsCollapsed)}
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="w-6 h-6 bg-green-600 text-white text-sm font-bold rounded-full flex items-center justify-center">2</span>
+                                <h3 className="text-lg font-semibold text-white">Select Goals</h3>
+                                <span className="text-sm text-slate-300">
+                                    ({selectedGoals}+ goals)
+                                </span>
+                            </div>
+                            <ChevronUpIcon className={`w-5 h-5 text-white transform transition-transform ${isGoalsCollapsed ? 'rotate-180' : ''}`} />
+                        </div>
+                        <div className={`collapsible-content ${isGoalsCollapsed ? 'collapsed' : 'expanded'}`}>
+                            <div className="p-4 bg-slate-900/30">
+                                <GoalsTab selectedGoals={selectedGoals} onGoalsChange={onGoalsChange} goalsOdds={goalsOdds} />
+                            </div>
+                        </div>
                     </div>
+
+                    {/* Step 3: Select Cards */}
+                    <div className="rounded-lg border border-slate-600 overflow-hidden">
+                        <div 
+                            className="flex justify-between items-center p-4 bg-slate-800/50 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                            onClick={() => setIsCardsCollapsed(!isCardsCollapsed)}
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="w-6 h-6 bg-yellow-600 text-white text-sm font-bold rounded-full flex items-center justify-center">3</span>
+                                <h3 className="text-lg font-semibold text-white">Select Cards</h3>
+                                <span className="text-sm text-slate-300">
+                                    ({selectedCards}+ cards)
+                                </span>
+                            </div>
+                            <ChevronUpIcon className={`w-5 h-5 text-white transform transition-transform ${isCardsCollapsed ? 'rotate-180' : ''}`} />
+                        </div>
+                        <div className={`collapsible-content ${isCardsCollapsed ? 'collapsed' : 'expanded'}`}>
+                            <div className="p-4 bg-slate-900/30">
+                                <CardsTab selectedCards={selectedCards} onCardsChange={onCardsChange} cardsOdds={cardsOdds} />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     );
-} 
+}; 

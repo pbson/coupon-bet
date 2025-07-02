@@ -13,19 +13,36 @@ const SearchIcon = () => (
     </svg>
 );
 
-const Chip = ({ text, boost, selected }: { text: string, boost: string, selected: boolean }) => (
+const LockIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-8 h-8">
+      <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
+    </svg>
+);
+
+const Chip = ({ text, boost, selected, locked, onClick }: { 
+    text: string, 
+    boost: string, 
+    selected: boolean, 
+    locked?: boolean,
+    onClick?: () => void 
+}) => (
     <div className="flex flex-col items-center gap-3 group">
         <button 
+            onClick={locked ? undefined : onClick}
+            disabled={locked}
             className={`
                 w-28 h-28 rounded-full relative flex items-center justify-center
                 font-black text-5xl transition-all duration-300 transform-gpu
-                group-hover:scale-105
-                ${selected ? 'scale-110' : ''}
+                ${!locked && 'group-hover:scale-105 cursor-pointer'}
+                ${selected && !locked ? 'scale-110' : ''}
+                ${locked ? 'cursor-not-allowed opacity-50' : ''}
             `}
             style={{
-                background: selected 
-                    ? 'radial-gradient(circle at 50% 50%, #fef08a, #facc15)' 
-                    : 'radial-gradient(circle at 50% 50%, #475569, #1e293b)',
+                background: locked
+                    ? 'radial-gradient(circle at 50% 50%, #6b7280, #374151)'
+                    : selected 
+                        ? 'radial-gradient(circle at 50% 50%, #fef08a, #facc15)' 
+                        : 'radial-gradient(circle at 50% 50%, #475569, #1e293b)',
                 boxShadow: `
                     inset 0 0 3px rgba(0,0,0,0.5),
                     inset 0 2px 2px rgba(255,255,255,0.2),
@@ -37,30 +54,40 @@ const Chip = ({ text, boost, selected }: { text: string, boost: string, selected
             <div 
                 className="absolute inset-0 rounded-full"
                 style={{
-                    background: `repeating-conic-gradient(${selected ? '#fde047' : '#334155'} 0% 5%, ${selected ? '#facc15' : '#475569'} 5% 10%)`
+                    background: locked
+                        ? `repeating-conic-gradient(#6b7280 0% 5%, #4b5563 5% 10%)`
+                        : `repeating-conic-gradient(${selected ? '#fde047' : '#334155'} 0% 5%, ${selected ? '#facc15' : '#475569'} 5% 10%)`
                 }}
             ></div>
             <div 
                 className="absolute inset-[12px] rounded-full flex items-center justify-center"
                 style={{
-                    background: selected 
-                        ? 'radial-gradient(circle at 50% 50%, #fef08a, #facc15)' 
-                        : 'radial-gradient(circle at 50% 50%, #475569, #1e293b)',
+                    background: locked
+                        ? 'radial-gradient(circle at 50% 50%, #6b7280, #374151)'
+                        : selected 
+                            ? 'radial-gradient(circle at 50% 50%, #fef08a, #facc15)' 
+                            : 'radial-gradient(circle at 50% 50%, #475569, #1e293b)',
                     boxShadow: 'inset 0 0 10px rgba(0,0,0,0.6)'
                 }}
             >
-                <span 
-                    className={`
-                        transition-colors duration-300 group-hover:text-white
-                        ${selected ? 'text-slate-800' : 'text-slate-400'}
-                    `}
-                    style={{
-                        textShadow: selected ? '0 1px 1px rgba(255,255,255,0.5)' : '0 1px 1px rgba(0,0,0,0.8)'
-                    }}
-                >{boost}</span>
+                {locked ? (
+                    <LockIcon />
+                ) : (
+                    <span 
+                        className={`
+                            transition-colors duration-300 group-hover:text-white
+                            ${selected ? 'text-slate-800' : 'text-slate-400'}
+                        `}
+                        style={{
+                            textShadow: selected ? '0 1px 1px rgba(255,255,255,0.5)' : '0 1px 1px rgba(0,0,0,0.8)'
+                        }}
+                    >{boost}</span>
+                )}
             </div>
         </button>
-        <span className={`text-sm font-semibold text-center transition-colors ${selected ? 'text-amber-300' : 'text-slate-400'} group-hover:text-white`}>
+        <span className={`text-sm font-semibold text-center transition-colors ${
+            locked ? 'text-gray-500' : selected ? 'text-amber-300' : 'text-slate-400'
+        } ${!locked && 'group-hover:text-white'}`}>
             {text}
         </span>
     </div>
@@ -88,6 +115,8 @@ export const BetBoost = ({
 
     const [scorerSearch, setScorerSearch] = useState('');
     const [cardSearch, setCardSearch] = useState('');
+    const [scorerChipSelected, setScorerChipSelected] = useState(false);
+    const [cardChipSelected, setCardChipSelected] = useState(false);
 
     const allPlayers = selectedGames.flatMap(game => [
         ...game.home.players.map(p => ({ ...p, teamLogo: game.home.logo })),
@@ -96,6 +125,26 @@ export const BetBoost = ({
 
     const filteredScorerPlayers = allPlayers.filter(p => p.name.toLowerCase().includes(scorerSearch.toLowerCase()));
     const filteredCardPlayers = allPlayers.filter(p => p.name.toLowerCase().includes(cardSearch.toLowerCase()));
+
+    const handleScorerChipClick = () => {
+        const newSelected = !scorerChipSelected;
+        setScorerChipSelected(newSelected);
+        if (newSelected && filteredScorerPlayers.length > 0) {
+            onSelectGoalscorer(filteredScorerPlayers[0]);
+        } else if (!newSelected) {
+            onSelectGoalscorer(undefined as any);
+        }
+    };
+
+    const handleCardChipClick = () => {
+        const newSelected = !cardChipSelected;
+        setCardChipSelected(newSelected);
+        if (newSelected && filteredCardPlayers.length > 0) {
+            onSelectCardedPlayer(filteredCardPlayers[0]);
+        } else if (!newSelected) {
+            onSelectCardedPlayer(undefined as any);
+        }
+    };
 
     const renderPlayerList = (
         players: (Player & { teamLogo: string })[],
@@ -141,43 +190,72 @@ export const BetBoost = ({
 
             <div className={`collapsible-content ${isCollapsed ? 'collapsed' : 'expanded'}`}>
                 <div className="mt-4">
-                    <div className="flex justify-center gap-4 mb-6">
-                        <Chip text="Player to Score" boost="x1.2" selected={!!selectedGoalscorer} />
-                        <Chip text="Player to be Carded" boost="x1.2" selected={!!selectedCardedPlayer} />
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 justify-items-center">
+                        <Chip 
+                            text="Player to Score" 
+                            boost="x1.2" 
+                            selected={scorerChipSelected} 
+                            onClick={handleScorerChipClick}
+                        />
+                        <Chip 
+                            text="Player to be Carded" 
+                            boost="x1.2" 
+                            selected={cardChipSelected} 
+                            onClick={handleCardChipClick}
+                        />
+                        <Chip 
+                            text="Player to be Sent Off" 
+                            boost="x2.5" 
+                            selected={false} 
+                            locked={true}
+                        />
+                        <Chip 
+                            text="Player to Assist" 
+                            boost="x1.8" 
+                            selected={false} 
+                            locked={true}
+                        />
                     </div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {/* Section 1: Player to Score */}
-                        <div className="p-4 rounded-lg bg-blue-900/50">
-                            <h3 className="text-lg font-semibold text-white mb-3">Player to Score</h3>
-                            <div className="relative mb-3">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white"><SearchIcon /></span>
-                                <input
-                                    type="text"
-                                    placeholder="Search player to score..."
-                                    value={scorerSearch}
-                                    onChange={(e) => setScorerSearch(e.target.value)}
-                                    className="w-full rounded-lg p-3 pl-10 text-base text-white border-2 focus:ring-2 bet-input"
-                                />
-                            </div>
-                            {renderPlayerList(filteredScorerPlayers, onSelectGoalscorer, selectedGoalscorer, 'score')}
-                        </div>
 
-                        {/* Section 2: Player to get a Yellow Card */}
-                        <div className="p-4 rounded-lg bg-blue-900/50">
-                            <h3 className="text-lg font-semibold text-white mb-3">Player to be Carded</h3>
-                             <div className="relative mb-3">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white"><SearchIcon /></span>
-                                <input
-                                    type="text"
-                                    placeholder="Search player to be carded..."
-                                    value={cardSearch}
-                                    onChange={(e) => setCardSearch(e.target.value)}
-                                    className="w-full rounded-lg p-3 pl-10 text-base text-white border-2 focus:ring-2 bet-input"
-                                />
-                            </div>
-                            {renderPlayerList(filteredCardPlayers, onSelectCardedPlayer, selectedCardedPlayer, 'card')}
+                    {(scorerChipSelected || cardChipSelected) && (
+                        <div className={`grid gap-6 ${scorerChipSelected && cardChipSelected ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                            {/* Section 1: Player to Score */}
+                            {scorerChipSelected && (
+                                <div className="p-4 rounded-lg bg-blue-900/50">
+                                    <h3 className="text-lg font-semibold text-white mb-3">Player to Score</h3>
+                                    <div className="relative mb-3">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white"><SearchIcon /></span>
+                                        <input
+                                            type="text"
+                                            placeholder="Search player to score..."
+                                            value={scorerSearch}
+                                            onChange={(e) => setScorerSearch(e.target.value)}
+                                            className="w-full rounded-lg p-3 pl-10 text-base text-white border-2 focus:ring-2 bet-input"
+                                        />
+                                    </div>
+                                    {renderPlayerList(filteredScorerPlayers, onSelectGoalscorer, selectedGoalscorer, 'score')}
+                                </div>
+                            )}
+
+                            {/* Section 2: Player to get a Yellow Card */}
+                            {cardChipSelected && (
+                                <div className="p-4 rounded-lg bg-blue-900/50">
+                                    <h3 className="text-lg font-semibold text-white mb-3">Player to be Carded</h3>
+                                     <div className="relative mb-3">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white"><SearchIcon /></span>
+                                        <input
+                                            type="text"
+                                            placeholder="Search player to be carded..."
+                                            value={cardSearch}
+                                            onChange={(e) => setCardSearch(e.target.value)}
+                                            className="w-full rounded-lg p-3 pl-10 text-base text-white border-2 focus:ring-2 bet-input"
+                                        />
+                                    </div>
+                                    {renderPlayerList(filteredCardPlayers, onSelectCardedPlayer, selectedCardedPlayer, 'card')}
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

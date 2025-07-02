@@ -95,7 +95,7 @@ export default function App() {
       if (isCurrentlySelected) {
         // If currently selected, deselect it
         delete newSelections[selectionKey];
-      } else {
+    } else {
         // If not selected, select this one and remove any lower selections in the same column
         // First, remove all selections in this column
         for (let i = 0; i < 3; i++) {
@@ -119,7 +119,7 @@ export default function App() {
   }
 
   const handleGamesChange = (games: Game[]) => {
-    setSelectedGames(games);
+      setSelectedGames(games);
   }
 
   const handleSelectGoalscorer = (player: Player) => {
