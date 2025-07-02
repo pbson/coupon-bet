@@ -127,7 +127,7 @@ export const GameSetup = ({
       <div className="rounded-xl shadow-2xl border-2 p-4 bet-card">
         <div className="flex justify-between items-center cursor-pointer" onClick={onToggleCollapse}>
           <h2 className="text-xl font-bold text-white">
-            1. Choose your games
+            1. Pick your 3 games
           </h2>
           <ChevronUpIcon className={`w-6 h-6 text-white transform transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
         </div>
