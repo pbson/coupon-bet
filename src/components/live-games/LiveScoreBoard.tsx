@@ -42,7 +42,7 @@ export const LiveScoreBoard: React.FC<LiveScoreBoardProps> = ({
               </div>
               
               <div className="mx-1 sm:mx-2 text-center">
-                <span className="text-lg sm:text-xl font-bold text-white tracking-tighter">{score.home}-{score.away}</span>
+                <span className="text-sm sm:text-xl font-bold text-white tracking-tighter">{score.home}-{score.away}</span>
               </div>
               
               <div className="flex flex-col items-center gap-1 flex-1">
